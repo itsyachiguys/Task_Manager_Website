@@ -1,0 +1,214 @@
+<!-- this is the start of my pomodoro timer page. i made this to help me focus on tasks using the pomodoro technique, where you work for 25 minutes and take a break. it's part of my web development project to manage time effectively. -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <!-- these meta tags ensure the page looks good on all devices, especially mobile phones. i added them because responsiveness is important for user experience. -->
+  <meta charset="utf-8"/><meta name="viewport" content="width=device-width,initial-scale=1"/>
+  <!-- the title shows up in the browser tab. i chose 'pomodoro - pastel tasks' to reflect the app's name and the calming theme. -->
+  <title>Pomodoro - Pastel Tasks</title>
+  <!-- linking to my css file for all the styling. this keeps the html clean and separates concerns. -->
+  <link rel="stylesheet" href="style.css"/>
+</head>
+<body>
+  <!-- this is the body of the page. i have a soothing background div for visual appeal. -->
+  <div class="soothing-bg"></div>
+  <!-- the header contains the brand and navigation. i personalized it with my name and a motivational subtitle. -->
+  <header class="header">
+    <div class="brand">
+      <!-- the logo is a sparkle emoji to represent creativity and focus. -->
+      <div class="logo">✨</div>
+      <div>
+        <!-- my name in the brand title to make it personal. -->
+        <div class="brand-title">Hello, Yachi!</div>
+        <!-- subtitle that captures the essence of the app: focus, plan, and grow. -->
+        <div class="brand-subtitle">Focus • Plan • Bloom</div>
+      </div>
+    </div>
+    <!-- navigation bar with links to different pages. the active class highlights the current page. -->
+    <nav class="nav">
+      <a href="index.html">Home</a>
+      <a href="pomodoro.html" class="active">Pomodoro</a>
+      <a href="manage.html">Manage Tasks</a>
+      <a href="results.html">Results</a>
+      <a href="projects.html">Projects</a>
+    </nav>
+  </header>
+
+  <!-- this is the main container for the pomodoro timer. i used a card layout to make it look clean and centered. -->
+  <div class="pomodoro-container">
+    <div class="card">
+      <!-- the main heading for the timer section. -->
+      <div class="h1">Focus Timer</div>
+      <!-- a small description to guide the user on how to use the timer. -->
+      <div class="small">Choose a length and press start — or try micro sessions (1 min)</div>
+
+      <!-- these are the minute buttons for quick selection. i made them flexible with flexbox for better layout. -->
+      <div class="timer-buttons" style="display:flex; gap:8px; justify-content:center; margin:16px 0; flex-wrap:wrap;">
+        <button class="timer-btn" data-min="1">1m</button>
+        <button class="timer-btn" data-min="5">5m</button>
+        <button class="timer-btn" data-min="10">10m</button>
+        <button class="timer-btn" data-min="15">15m</button>
+        <button class="timer-btn" data-min="25">25m</button>
+        <button class="timer-btn" data-min="45">45m</button>
+        <button class="timer-btn" data-min="60">60m</button>
+      </div>
+
+      <!-- this row contains the select dropdown and start/stop buttons. -->
+      <div class="row row-margin-top">
+        <select id="timerSelect" class="input" title="Select timer duration">
+          <option value="25">25 min</option>
+          <option value="50">50 min</option>
+          <option value="60">60 min</option>
+          <option value="5">5 min</option>
+          <option value="1">1 min</option>
+        </select>
+        <button id="startBtn" class="btn">Start</button>
+        <button id="stopBtn" class="btn secondary">Stop</button>
+      </div>
+
+      <!-- the large timer display where the countdown is shown. -->
+      <div class="timer-large" id="timerDisplay">25:00</div>
+      <!-- controls for pause and reset. -->
+      <div class="timer-controls">
+        <button id="pauseBtn" class="btn secondary">Pause</button>
+        <button id="resetBtn" class="btn">Reset</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- this is the soothing background video. i added it to create a calming atmosphere while focusing. it's positioned fixed and has low opacity so it doesn't distract. -->
+  <video id="soothingVideo" autoplay muted loop style="position:fixed; top:0; left:0; width:100%; height:100%; object-fit:cover; z-index:-3; opacity:0.3;">
+    <source src="https://player.vimeo.com/external/371433597.sd.mp4?s=12345" type="video/mp4">
+    <!-- fallback to a calming gradient if video doesn't load -->
+  </video>
+
+<script src="app.js"></script>
+<script>
+  // this is the javascript section where all the timer logic is implemented. i wrote this to handle the pomodoro functionality.
+  let timerInt=null, remaining=25*60, running=false;
+  // these are the main elements i selected from the html to manipulate the timer.
+  const display = document.getElementById("timerDisplay");
+  const select = document.getElementById("timerSelect");
+  const video = document.getElementById("soothingVideo");
+
+  // this function formats the time in seconds to mm:ss format. i used it to display the timer nicely.
+  function formatTime(s){
+    const m = Math.floor(s/60); const sec = s%60;
+    return `${m}:${sec<10? '0'+sec: sec}`;
+  }
+
+  // this handles the minute buttons. when clicked, it sets the timer to that duration and updates the display.
+  document.querySelectorAll('.timer-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const minutes = parseInt(btn.dataset.min);
+      remaining = minutes * 60;
+      display.textContent = formatTime(remaining);
+      select.value = minutes;
+    });
+  });
+
+  // this updates the timer when the select dropdown changes.
+  select.addEventListener("change", ()=>{
+    remaining = parseInt(select.value)*60;
+    display.textContent = formatTime(remaining);
+  });
+
+  // this handles the start button. it starts the timer, plays the video, and sets up the countdown interval.
+  document.getElementById("startBtn").addEventListener("click", ()=>{
+    if(running) return;
+    running = true;
+    display.classList.add('active');
+    video.play();
+    if(!remaining) remaining = parseInt(select.value)*60;
+    timerInt = setInterval(()=>{
+      if(remaining<=0){
+        clearInterval(timerInt);
+        running=false;
+        display.classList.remove('active');
+        video.pause();
+        showCompletionMessage();
+      } else {
+        remaining--;
+        display.textContent = formatTime(remaining);
+      }
+    },1000);
+  });
+
+  // this handles the stop button. it stops the timer, pauses the video, and resets the time to the selected duration.
+  document.getElementById("stopBtn").addEventListener("click", ()=>{
+    clearInterval(timerInt);
+    timerInt=null;
+    running=false;
+    display.classList.remove('active');
+    video.pause();
+    remaining = parseInt(select.value)*60;
+    display.textContent = formatTime(remaining);
+  });
+
+  // this handles the pause button. it toggles between pausing and resuming the timer.
+  document.getElementById("pauseBtn").addEventListener("click", ()=>{
+    if(running){
+      clearInterval(timerInt);
+      running=false;
+      display.classList.remove('active');
+      video.pause();
+    } else {
+      if(!remaining) remaining=parseInt(select.value)*60;
+      timerInt=setInterval(()=>{
+        remaining--;
+        if(remaining<=0){
+          clearInterval(timerInt);
+          running=false;
+          display.classList.remove('active');
+          video.pause();
+          showCompletionMessage();
+        } else {
+          display.textContent=formatTime(remaining);
+        }
+      },1000);
+      running=true;
+      display.classList.add('active');
+      video.play();
+    }
+  });
+
+  // this handles the reset button. it stops the timer, pauses the video, and resets the time to the selected duration.
+  document.getElementById("resetBtn").addEventListener("click", ()=>{
+    clearInterval(timerInt);
+    running=false;
+    display.classList.remove('active');
+    video.pause();
+    remaining=parseInt(select.value)*60;
+    display.textContent = formatTime(remaining);
+  });
+
+  // this function creates and displays a beautiful completion message when the timer reaches zero.
+  function showCompletionMessage(){
+    // Create a beautiful completion message
+    const modal = document.createElement('div');
+    modal.style.cssText = `
+      position:fixed; top:0; left:0; width:100%; height:100%;
+      background:linear-gradient(135deg, rgba(255,214,232,0.9), rgba(198,231,217,0.9));
+      display:flex; align-items:center; justify-content:center; z-index:1000;
+      backdrop-filter:blur(10px);
+    `;
+    modal.innerHTML = `
+      <div style="text-align:center; padding:40px; background:rgba(255,255,255,0.9); border-radius:20px; box-shadow:0 20px 40px rgba(0,0,0,0.1);">
+        <div style="font-size:48px; margin-bottom:20px;">🎉</div>
+        <h2 style="color:#5a2f45; margin:0 0 20px 0;">Session Complete!</h2>
+        <p style="color:#6b495b; font-size:18px; margin:0 0 30px 0;">Great job! Take a short break and celebrate your progress.</p>
+        <button onclick="this.parentElement.parentElement.remove()" style="
+          background:linear-gradient(135deg, var(--accent), var(--accent-2));
+          color:#6b2540; padding:12px 24px; border:none; border-radius:12px;
+          font-weight:700; cursor:pointer; font-size:16px;
+        ">Continue</button>
+      </div>
+    `;
+    document.body.appendChild(modal);
+  }
+
+  // this initializes the timer display with the default value from the select dropdown.
+  select.dispatchEvent(new Event('change'));
+</script>
+</body>
+</html>

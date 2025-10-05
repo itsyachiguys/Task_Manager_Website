@@ -1,0 +1,382 @@
+JAVASCRIPT : 
+
+Basic Syntax and Structure
+Variable declarations: const, let
+Function declarations: function name() {}
+Arrow functions: () => {}
+Object literals: { key: value }
+Array literals: []
+String literals: "text", 'text'
+Template literals: `${variable}`
+Comments: // single-line, /* multi-line */
+
+Data Types and Values
+Primitive types: strings, numbers, booleans
+Objects: {} with properties
+Arrays: [] with elements
+null and undefined (implicitly used)
+NaN (not explicitly, but in calculations)
+
+Operators
+Assignment: =
+Arithmetic: +, -, *, /, %
+Comparison: ===, !==, >, <, >=, <=
+Logical: &&, ||, !
+Ternary: condition ? true : false
+Spread/rest: ... (not used, but in array methods)
+Increment/decrement: ++, -- (not directly, but in loops)
+
+Control Flow
+Conditional statements: if, else if, else
+Loops: forEach (array method), implicit loops in setInterval
+Switch statements: switch, case, break, default
+Return statements: return
+
+Functions and Scope
+Function calls: functionName()
+Parameters and arguments
+Global scope: window object
+Local scope: variables inside functions
+Closures (implicit in event listeners and intervals)
+
+DOM Manipulation
+Element selection: document.getElementById(), document.createElement()
+Element properties: .innerHTML, .textContent, .className, .classList
+Event handling: addEventListener(), onclick
+Form handling: preventDefault(), submit event
+Dynamic content: appending elements with appendChild()
+
+Browser APIs
+LocalStorage: localStorage.getItem(), localStorage.setItem()
+Date objects: new Date(), date arithmetic
+Math object: Math.floor(), Math.random(), Math.ceil()
+Timers: setInterval()
+Window object: window.onload, window.App
+
+Array Methods
+push(): adding elements
+splice(): removing elements
+indexOf(): finding index
+forEach(): iterating
+filter(): filtering elements
+sort(): sorting
+slice(): extracting subarrays
+
+String Methods
+trim(): removing whitespace
+split() (not used, but in JSON operations)
+String concatenation: +
+
+JSON Handling
+JSON.parse(): parsing strings to objects
+JSON.stringify(): converting objects to strings
+
+Error Handling
+Try-catch (not explicitly used, but in date calculations)
+
+ES6+ Features
+Destructuring (not used)
+Modules (not used, but window.App for sharing)
+Promises/async (not used)
+
+Other Tiny Concepts
+Property access: .property, [index]
+Method calls: object.method()
+Boolean coercion: in conditionals
+Type coercion: in string concatenation
+Event object: e in event handlers
+This context: not used, but in functions
+Immediately Invoked Function Expressions (IIFE): not used
+Prototypes: not used
+Regular expressions: not used
+
+
+-------------------------------------------------------------
+
+CSS 
+
+Basic Syntax and Structure
+CSS Rules: selector { property: value; }
+Comments: /* single-line */, /* multi-line */
+CSS Variables (Custom Properties): --variable: value;
+CSS Reset: *{box-sizing:border-box}
+Root Selector: :root
+Body Selector: body
+
+Selectors
+Element Selectors: body, div, a, button, input, textarea, select
+Class Selectors: .card, .btn, .nav, .logo
+ID Selectors: #modeToggle, #taskForm, #taskInput
+Pseudo-class Selectors: :hover, :focus, :active, :first-child, :last-child
+Pseudo-element Selectors: ::before, ::after
+Attribute Selectors: [type="text"] (not used)
+Universal Selector: *
+Adjacent Sibling: + (not used)
+General Sibling: ~ (not used)
+
+Box Model
+Margin: margin, margin-top, margin-bottom, margin-left, margin-right
+Padding: padding, padding-top, padding-bottom, padding-left, padding-right
+Border: border, border-radius, border-color, border-width, border-style
+Box-sizing: box-sizing: border-box
+Width: width, min-width, max-width
+Height: height, min-height, max-height
+
+Layout and Positioning
+Display: display: flex, display: grid, display: inline-block, display: block, display: none
+Position: position: relative, position: absolute, position: fixed, position: sticky
+Z-index: z-index
+Top, Left, Right, Bottom: top, left, right, bottom
+Float: (not used)
+Clear: (not used)
+Overflow: overflow: hidden, overflow-x, overflow-y
+
+Flexbox
+Flex Container: display: flex
+Flex Direction: flex-direction: column, flex-direction: row
+Justify Content: justify-content: space-between, justify-content: center, justify-content: space-around
+Align Items: align-items: center, align-items: stretch
+Flex Wrap: flex-wrap: wrap
+Gap: gap
+Flex Grow/Shrink/Basis: (not used)
+Order: (not used)
+
+CSS Grid
+Grid Container: display: grid
+Grid Template Columns: grid-template-columns: 1fr 360px
+Grid Template Rows: (not used)
+Grid Gap: gap
+Grid Area: (not used)
+Place Items: place-items: center
+
+Colors and Backgrounds
+Color: color: #hex, color: rgba(r,g,b,a)
+Background: background, background-color, background-image
+Background Attachment: (not used)
+Background Position: (not used)
+Background Repeat: (not used)
+Background Size: (not used)
+Linear Gradient: linear-gradient(direction, color1, color2)
+Radial Gradient: radial-gradient(circle at position, color1, color2)
+Background Blend Mode: (not used)
+
+Typography
+Font Family: font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif
+Font Size: font-size: 22px, font-size: 1em, font-size: 100%
+Font Weight: font-weight: 700, font-weight: 400, font-weight: 800
+Font Style: font-style: italic
+Line Height: (not used)
+Letter Spacing: letter-spacing: 0.5px
+Text Align: text-align: center, text-align: left
+Text Decoration: text-decoration: none
+Text Transform: text-transform: uppercase
+Text Overflow: (not used)
+White Space: (not used)
+Word Break: (not used)
+
+Shadows and Effects
+Box Shadow: box-shadow: 0 8px 20px rgba(133,98,120,0.12)
+Text Shadow: (not used)
+Filter: (not used)
+Backdrop Filter: backdrop-filter: blur(10px)
+Opacity: opacity: 0.7, opacity: 1
+Visibility: (not used)
+
+Transitions and Animations
+Transition: transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1)
+Animation: animation: float 20s ease-in-out infinite
+Keyframes: @keyframes name { from { ... } to { ... } }
+Animation Duration: animation-duration
+Animation Timing Function: ease-in-out, cubic-bezier
+Animation Iteration Count: infinite
+Animation Fill Mode: (not used)
+Transform: transform: translateY(-4px), transform: scale(1.1), transform: rotate(5deg)
+Transform Origin: (not used)
+
+Media Queries
+Media Query: @media (max-width: 980px)
+Media Features: max-width, min-width, prefers-reduced-motion, prefers-contrast, hover, pointer
+
+Pseudo-elements and Content
+Content: content: '', content: '✨'
+Counter: (not used)
+
+Lists and Counters
+List Style: (not used)
+Counter Reset/Increment: (not used)
+
+Tables
+Table Properties: (not used)
+
+Forms
+Input Styling: input, textarea, select
+Focus Styles: :focus
+Placeholder: (not used)
+
+Accessibility
+Aria Labels: aria-label="Toggle color mode"
+High Contrast: @media (prefers-contrast: high)
+Reduced Motion: @media (prefers-reduced-motion: reduce)
+Touch Targets: min-height: 44px
+
+Other Tiny Concepts
+Cursor: cursor: pointer, cursor: default
+Pointer Events: (not used)
+User Select: (not used)
+Resize: (not used)
+Scroll Behavior: (not used)
+Viewport Units: vw, vh, vmin, vmax (not used)
+Calc: calc(100vh - 72px)
+Important: !important
+Inherit: color: inherit
+Initial: (not used)
+Unset: (not used)
+Revert: (not used)
+All: all: 0.3s cubic-bezier(0.4, 0, 0.2, 1)
+Place Content: place-content: center (not used)
+Grid Auto Flow: (not used)
+Flex Basis: (not used)
+Align Self: (not used)
+Justify Self: (not used)
+Grid Column/Row: (not used)
+Aspect Ratio: (not used)
+Object Fit: (not used)
+Clip Path: (not used)
+Mask: (not used)
+Blend Mode: (not used)
+Isolation: (not used)
+Will Change: (not used)
+Contain: (not used)
+Content Visibility: (not used)
+
+
+
+--------------------------------------------------------
+
+HTML 
+
+Basic Structure
+DOCTYPE Declaration: <!DOCTYPE html>
+HTML Root Element: <html lang="en">
+Head Section: <head>
+Body Section: <body>
+
+Document Metadata
+Meta Tags: <meta charset="utf-8"/>, <meta name="viewport" content="width=device-width,initial-scale=1"/>
+Title Tag: <title>Page Title</title>
+Link Tag: <link rel="stylesheet" href="style.css"/>
+
+Semantic Elements
+Header: <header class="header">
+Navigation: <nav class="nav">
+Main Content: <main>
+Aside/Sidebar: <aside class="side">
+Section: <section> (not used)
+Article: <article> (not used)
+Footer: <footer> (not used)
+
+Content Elements
+Div: <div class="card">
+Heading: <div class="h1">Heading</div> (using div instead of h1)
+Paragraph: <p> </p> (empty paragraphs for spacing)
+Span: <span style="...">text</span>
+Strong: <strong>text</strong>
+Em: (not used)
+I: (not used)
+B: (not used)
+U: (not used)
+
+Lists
+Unordered List: <ul> (not used)
+Ordered List: <ol> (not used)
+List Item: <li> (not used)
+
+Links and Navigation
+Anchor: <a href="index.html" class="active">Home</a>
+Target Attribute: target="_blank"
+Rel Attribute: (not used)
+
+Images and Media
+Image: <img> (not used)
+Video: <video id="soothingVideo" autoplay muted loop>
+Source: <source src="..." type="video/mp4">
+Canvas: <canvas id="semChart"></canvas>
+
+Forms and Input
+Form: <form> (not used, but form elements are used)
+Input: <input id="taskTitle" class="input" placeholder="Task title"/>
+Textarea: <textarea> (not used)
+Select: <select id="taskPriority" class="input">
+Option: <option value="Low">Low Priority</option>
+Button: <button id="addTaskBtn" class="btn">Add Task</button>
+Label: <label for="taskPriority" class="visually-hidden">Task Priority</label>
+
+Scripts
+Script Tag: <script src="app.js"></script>
+Inline Script: <script> // JavaScript code </script>
+
+Attributes
+ID: id="modeToggle"
+Class: class="header"
+Style: style="background:none; border:none; cursor:pointer;"
+Href: href="index.html"
+Src: src="app.js"
+Type: type="date", type="number"
+Placeholder: placeholder="Task title"
+Value: value="Low"
+Name: (not used)
+Alt: (not used)
+Title: title="Toggle color mode"
+Aria-label: aria-label="Toggle color mode"
+Data Attributes: data-min="1", data-idx="${idx}"
+Min/Max: min="0" max="100"
+Disabled: (not used)
+Required: (not used)
+Checked: (not used)
+Selected: (not used)
+Autoplay: autoplay
+Muted: muted
+Loop: loop
+Controls: (not used)
+
+Comments
+HTML Comments: <!-- This is a comment -->
+
+Other Tiny Concepts
+Self-closing Tags: <meta charset="utf-8"/>, <link rel="stylesheet" href="style.css"/>
+Nested Elements: <div><div>content</div></div>
+Empty Elements: <div class="small">No tasks yet. Add one above! 🌸</div>
+Whitespace: Spaces, tabs, newlines for formatting
+Entities: (not used, but emojis like ✨ are used)
+Lang Attribute: lang="en"
+Viewport Meta: content="width=device-width,initial-scale=1"
+Charset Meta: charset="utf-8"
+Favicon: (not used)
+Base: (not used)
+Noscript: (not used)
+Iframe: (not used)
+Object: (not used)
+Embed: (not used)
+Audio: (not used)
+Track: (not used)
+Map: (not used)
+Area: (not used)
+Table: <table> (not used)
+Tr: (not used)
+Th: (not used)
+Td: (not used)
+Caption: (not used)
+Colgroup: (not used)
+Thead: (not used)
+Tbody: (not used)
+Tfoot: (not used)
+Datalist: (not used)
+Keygen: (not used)
+Output: (not used)
+Progress: (not used)
+Meter: (not used)
+Details: (not used)
+Summary: (not used)
+Menu: (not used)
+Menuitem: (not used)
+Dialog: (not used)

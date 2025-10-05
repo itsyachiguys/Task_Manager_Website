@@ -1,0 +1,162 @@
+<!-- Results Page - Academic Progress Tracking -->
+<!-- This page provides tools for tracking semester progress and mid/end semester marks -->
+<!-- Features interactive charts and data persistence using localStorage -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1"/>
+  <title>Results - Pastel Tasks</title>
+  <link rel="stylesheet" href="style.css"/>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+  <!-- Header Section - Navigation and branding -->
+  <header class="header">
+    <div class="brand">
+      <div class="logo">✨</div>
+      <div>
+        <div class="brand-title">Hello, Yachi!</div>
+        <div class="brand-subtitle">Focus • Plan • Bloom</div>
+      </div>
+    </div>
+    <nav class="nav">
+      <a href="index.html">Home</a>
+      <a href="pomodoro.html">Pomodoro</a>
+      <a href="manage.html">Manage Tasks</a>
+      <a href="results.html" class="active">Results</a>
+      <a href="projects.html">Projects</a>
+    </nav>
+  </header>
+
+  <!-- Main Content Container -->
+  <div class="main-container">
+    <!-- Semester Progress Section - Interactive chart for tracking semester percentages -->
+    <div class="card">
+      <div class="h1">Semester Progress</div>
+      <div class="small">Enter percentage for previous semesters (1-4) and current sem (5)</div>
+      <p> </p>
+      <div class="sem-inputs-row">
+        <input id="s1" class="input" placeholder="Sem 1 %" />
+        <input id="s2" class="input" placeholder="Sem 2 %" />
+        <input id="s3" class="input" placeholder="Sem 3 %" />
+        <input id="s4" class="input" placeholder="Sem 4 %" />
+        <input id="s5" class="input" placeholder="Sem 5 %" />
+        <button id="plotBtn" class="btn">Plot</button>
+      </div>
+
+      <div style="margin-top:14px" class="chart-wrap card">
+        <canvas id="semChart"></canvas>
+      </div>
+    </div>
+
+    <!-- Mid/End Semester Tracker Section - For tracking current semester marks -->
+    <div class="card card-margin-top">
+      <div class="h1">Mid / End Sem Tracker</div>
+      <div class="small">Enter mid and end sem marks (percent) for current subjects</div>
+      <div style="display:flex;gap:8px;margin-top:10px;flex-wrap:wrap">
+        <input id="mid" class="input" placeholder="Mid sem average %" />
+        <input id="end" class="input" placeholder="End sem average %" />
+        <button id="saveME" class="btn">Save</button>
+      </div>
+      <div style="margin-top:10px">
+        <button id="loadSampleData" class="btn secondary">Load Sample Data</button>
+      </div>
+      <div id="meShow" style="margin-top:10px" class="small"></div>
+    </div>
+  </div>
+
+  <!-- External Scripts -->
+  <script src="app.js"></script>
+  <script>
+    // Chart Initialization - Creates the semester progress line chart
+    const semChartEl = document.getElementById("semChart").getContext('2d');
+    let semChart = new Chart(semChartEl, {
+      type:'line',
+      data:{labels:['Sem1','Sem2','Sem3','Sem4','Sem5'],datasets:[{label:'Semester %',data:[0,0,0,0,0],fill:true,backgroundColor:'rgba(255,182,193,0.25)',borderColor:'#ff85b8',tension:0.3}]},
+      options:{scales:{y:{min:0,max:100}}}
+    });
+
+    // Semester Plotting Function - Updates chart with user input data
+    function plotSem(){
+      const arr = [
+        Number(document.getElementById('s1').value)||0,
+        Number(document.getElementById('s2').value)||0,
+        Number(document.getElementById('s3').value)||0,
+        Number(document.getElementById('s4').value)||0,
+        Number(document.getElementById('s5').value)||0
+      ];
+      semChart.data.datasets[0].data = arr;
+      semChart.update();
+      localStorage.setItem(App.KEY_GRADES, JSON.stringify({sem:arr}));
+    }
+
+    // Event Listeners - Connect UI elements to functions
+    document.getElementById('plotBtn').addEventListener('click', plotSem);
+
+    // Mid/End Semester Save Function - Saves marks to localStorage
+    document.getElementById('saveME').addEventListener('click', ()=>{
+      const mid = Number(document.getElementById('mid').value)||0;
+      const end = Number(document.getElementById('end').value)||0;
+      const g = JSON.parse(localStorage.getItem(App.KEY_GRADES) || "{}");
+      g.mid = mid; g.end = end;
+      localStorage.setItem(App.KEY_GRADES, JSON.stringify(g));
+      showME();
+    });
+
+    // Sample Data Loader - Populates form with example data for demonstration
+    document.getElementById('loadSampleData').addEventListener('click', ()=>{
+      const sampleData = {
+        sem: [85, 78, 92, 88, 90], // Sample semester percentages
+        mid: 75, // Sample mid semester average
+        end: 85  // Sample end semester average
+      };
+      localStorage.setItem(App.KEY_GRADES, JSON.stringify(sampleData));
+      // Pre-fill the form with sample data
+      document.getElementById('s1').value = sampleData.sem[0];
+      document.getElementById('s2').value = sampleData.sem[1];
+      document.getElementById('s3').value = sampleData.sem[2];
+      document.getElementById('s4').value = sampleData.sem[3];
+      document.getElementById('s5').value = sampleData.sem[4];
+      document.getElementById('mid').value = sampleData.mid;
+      document.getElementById('end').value = sampleData.end;
+      plotSem();
+      showME();
+    });
+
+    // Display Function - Shows saved mid/end semester marks
+    function showME(){
+      const g = JSON.parse(localStorage.getItem(App.KEY_GRADES) || "{}");
+      if(!g || (!g.mid && !g.end)) document.getElementById('meShow').innerHTML = 'No mid/end marks saved.';
+      else document.getElementById('meShow').innerHTML = `Mid sem: <strong>${g.mid||0}%</strong> • End sem: <strong>${g.end||0}%</strong>`;
+    }
+
+    // Page Load Handler - Restores saved data and initializes sample data if needed
+    window.addEventListener('DOMContentLoaded', ()=>{
+      const saved = JSON.parse(localStorage.getItem(App.KEY_GRADES) || "null");
+      if(saved && saved.sem){ saved.sem.forEach((v,i)=>{ document.getElementById('s'+(i+1)).value = v; }); plotSem(); }
+      showME();
+
+      // Auto-populate sample data for new users
+      if(!saved || (!saved.sem && !saved.mid && !saved.end)){
+        const sampleData = {
+          sem: [85, 78, 92, 88, 90], // Sample semester percentages
+          mid: 75, // Sample mid semester average
+          end: 85  // Sample end semester average
+        };
+        localStorage.setItem(App.KEY_GRADES, JSON.stringify(sampleData));
+        // Pre-fill the form with sample data
+        document.getElementById('s1').value = sampleData.sem[0];
+        document.getElementById('s2').value = sampleData.sem[1];
+        document.getElementById('s3').value = sampleData.sem[2];
+        document.getElementById('s4').value = sampleData.sem[3];
+        document.getElementById('s5').value = sampleData.sem[4];
+        document.getElementById('mid').value = sampleData.mid;
+        document.getElementById('end').value = sampleData.end;
+        plotSem();
+        showME();
+      }
+    });
+  </script>
+</body>
+</html>

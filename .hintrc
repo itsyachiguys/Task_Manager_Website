@@ -1,0 +1,16 @@
+// hint configuration file - settings for code linting and browser compatibility
+// this file configures hint to check code quality and browser support
+{
+  "extends": [
+    "development"
+  ],
+  "browserslist": [
+    "defaults",
+    "not ie 11",
+    "not ios_saf <= 18.6",
+    "not safari <= 18.6"
+  ],
+  "hints": {
+    "no-inline-styles": "off"
+  }
+}

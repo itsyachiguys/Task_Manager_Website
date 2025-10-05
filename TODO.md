@@ -1,0 +1,8 @@
+- [x] Create hash.php for password hashing functions
+- [x] Create users.json with sample user data (hashed password)
+- [x] Create login.php with login form and authentication logic
+- [x] Create logout.php for session destruction
+- [x] Create index.php by copying index.html content and adding session check and user display
+- [x] Update navigation or add logout link in index.php
+- [x] Add "Forgot Password?" link to login.php
+- [x] Create forgot_password.php with password reset functionality

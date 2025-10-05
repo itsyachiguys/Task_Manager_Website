@@ -1,0 +1,189 @@
+<!-- home page - main dashboard for task management with deadlines, quotes, and shortcuts -->
+<!-- displays upcoming tasks, inspirational quotes, AI shortcuts, and smart alerts -->
+<!-- integrates with app.js for localStorage operations and shared utilities -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <!-- meta tags for responsive design and character encoding -->
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1"/>
+  <!-- page title for browser tab identification -->
+  <title>Home - Pastel Task Manager</title>
+  <!-- external stylesheet for visual styling -->
+  <link rel="stylesheet" href="style.css"/>
+</head>
+<body>
+  <!-- header section - branding, navigation, and theme toggle -->
+  <header class="header">
+    <div class="brand">
+      <div class="logo">✨</div>
+      <div>
+        <div class="brand-title">Hello, Yachi!</div>
+        <div class="brand-subtitle">Focus • Plan • Bloom</div>
+      </div>
+      <!-- theme toggle button for light/dark mode switching -->
+      <button id="modeToggle" aria-label="Toggle color mode" title="Toggle color mode" style="background:none; border:none; cursor:pointer; font-size:24px; margin-left:12px; color:#6b2b46;">🌓</button>
+    </div>
+    <!-- navigation bar with links to different pages -->
+    <nav class="nav">
+      <a href="index.html" class="active">Home</a>
+      <a href="pomodoro.html">Pomodoro</a>
+      <a href="manage.html">Manage Tasks</a>
+      <a href="results.html">Results</a>
+      <a href="projects.html">Projects</a>
+    </nav>
+  </header>
+
+  <!-- main layout container - grid system with main content and sidebar -->
+  <div class="container">
+    <!-- main content area - displays upcoming deadlines and daily quotes -->
+    <main>
+      <!-- upcoming deadlines card - shows tasks with due dates -->
+      <div class="card">
+        <div class="h1">📅 Upcoming Deadlines</div>
+        <div id="upcoming" class="upcoming-list">
+          <!-- populated by JavaScript -->
+        </div>
+      </div>
+
+      <!-- daily quote card - displays rotating inspirational quotes -->
+      <div class="card card-margin-top">
+        <div class="h1">💭 Daily Quote</div>
+        <div id="homeQuote" class="quote">Loading inspiring quote...</div>
+      </div>
+    </main>
+
+    <!-- sidebar - contains AI shortcuts and smart alerts -->
+    <aside class="side">
+      <!-- AI shortcuts card - quick links to helpful tools -->
+      <div class="card">
+        <div class="h1">🤖 Quick AI Shortcuts</div>
+        <div class="shortcuts" id="aiShortcuts"></div>
+      </div>
+
+      <!-- smart alerts card - shows task status notifications -->
+      <div class="card">
+        <div class="h1">🚨 Smart Alerts</div>
+        <div id="alertsArea"></div>
+      </div>
+    </aside>
+  </div>
+<!-- external scripts - load shared app logic and page-specific functionality -->
+<script src="app.js"></script>
+<script>
+  // ai shortcuts initialization - populate sidebar with helpful tool links
+  const node = document.getElementById("aiShortcuts");
+  App.AI_SHORTCUTS.forEach(s=>{
+    const a = document.createElement("a");
+    a.href = s.url; a.target="_blank";
+    a.className="shortcut";
+    a.innerHTML = `<strong>${s.name}</strong><span style="margin-left:8px;font-size:13px;color:#7a4c5f">open</span>`;
+    node.appendChild(a);
+  });
+
+  // inspirational quotes array - motivational messages for daily inspiration
+  const quotes = [
+    "Start where you are. Use what you have. Do what you can.",
+    "Small steps every day lead to big changes.",
+    "Focus on progress, not perfection.",
+    "A calm mind brings inner strength and self-confidence.",
+    "Break big tasks into tiny steps and begin."
+  ];
+  // quote rotation system - cycles through quotes every 60 seconds
+  App.initQuotes(quotes, "homeQuote", 60);
+
+  // upcoming tasks renderer - displays next 5 tasks with due dates and progress
+  function renderUpcoming(){
+    const out = document.getElementById("upcoming");
+    out.innerHTML="";
+    const tasks = App.loadTasks();
+    // filter tasks with due dates and sort by date ascending
+    const withDates = tasks.filter(t => t.dueDate).sort((a,b)=>{
+      return new Date(a.dueDate) - new Date(b.dueDate);
+    });
+    // display only the next 5 upcoming tasks
+    const list = withDates.slice(0,5);
+    list.forEach((t,i)=>{
+      const days = App.daysBetween(t.dueDate);
+      const wrap = App.el("div","up-item");
+      const left = App.el("div","up-left");
+      const pr = App.el("div","badge-rcae");
+      // apply priority-based styling to priority badge
+      if(t.priority==="High") pr.classList.add("pr-high");
+      else if(t.priority==="Medium") pr.classList.add("pr-med");
+      else pr.classList.add("pr-low");
+      pr.textContent = t.priority;
+      left.appendChild(pr);
+      const info = App.el("div","");
+      info.innerHTML = `<div style="font-weight:700;color:#5a2f45">${t.title}</div>
+        <div style="font-size:12px;color:#6b495b">Due: ${t.dueDate} • ${days} day(s)</div>
+        <div class="mini-progress"><div class="mini-fill" style="width:${t.progress||0}%"></div></div>`;
+      left.appendChild(info);
+      wrap.appendChild(left);
+
+      const right = App.el("div","");
+      // show status indicators based on days remaining
+      if(days<0){
+        const a = App.el("div","alert");
+        a.textContent = "Overdue";
+        right.appendChild(a);
+      } else if(days<=3){
+        const a = App.el("div","alert due-soon");
+        a.textContent = "Due soon";
+        right.appendChild(a);
+      } else {
+        right.appendChild(App.el("div","small")).textContent = `${t.progress||0}% done`;
+      }
+      wrap.appendChild(right);
+      out.appendChild(wrap);
+    });
+
+    if(list.length===0){
+      out.innerHTML = `<div class="small">No upcoming deadlines. Add tasks on Manage Tasks page.</div>`;
+    }
+  }
+
+  // smart alerts renderer - displays contextual notifications based on task status
+  function renderAlerts(){
+    const area = document.getElementById("alertsArea");
+    area.innerHTML="";
+    const tasks = App.loadTasks();
+    // categorize tasks by status for different alert types
+    const overdue = tasks.filter(t => t.dueDate && App.daysBetween(t.dueDate) < 0);
+    const dueSoon = tasks.filter(t => t.dueDate && App.daysBetween(t.dueDate) >=0 && App.daysBetween(t.dueDate) <=3);
+    const completed = tasks.filter(t => t.progress >= 100);
+
+    // show critical alert for overdue tasks
+    if(overdue.length){
+      const alertDiv = App.el("div","alert critical");
+      alertDiv.innerHTML = `<div class="alert-icon">🚨</div><div class="alert-content"><strong>${overdue.length} task(s) overdue!</strong><div class="alert-subtitle">Take action immediately</div></div><button class="alert-dismiss" onclick="this.parentElement.remove()">✕</button>`;
+      area.appendChild(alertDiv);
+    }
+    // show warning alert for tasks due within 3 days
+    if(dueSoon.length){
+      const alertDiv = App.el("div","alert warning");
+      alertDiv.innerHTML = `<div class="alert-icon">⚠️</div><div class="alert-content"><strong>${dueSoon.length} task(s) due within 3 days</strong><div class="alert-subtitle">Plan your time wisely</div></div><button class="alert-dismiss" onclick="this.parentElement.remove()">✕</button>`;
+      area.appendChild(alertDiv);
+    }
+    // show success alert for completed tasks
+    if(completed.length > 0){
+      const alertDiv = App.el("div","alert success");
+      alertDiv.innerHTML = `<div class="alert-icon">🎉</div><div class="alert-content"><strong>${completed.length} task(s) completed!</strong><div class="alert-subtitle">Great progress! Keep it up</div></div><button class="alert-dismiss" onclick="this.parentElement.remove()">✕</button>`;
+      area.appendChild(alertDiv);
+    }
+    // show info alert when all caught up with no pressing deadlines
+    if(!overdue.length && !dueSoon.length && completed.length === 0){
+      const alertDiv = App.el("div","alert info");
+      alertDiv.innerHTML = `<div class="alert-icon">✨</div><div class="alert-content"><strong>All caught up!</strong><div class="alert-subtitle">No pressing deadlines</div></div><button class="alert-dismiss" onclick="this.parentElement.remove()">✕</button>`;
+      area.appendChild(alertDiv);
+    }
+  }
+
+  // page initialization - render tasks and alerts when DOM is fully loaded
+  document.addEventListener("DOMContentLoaded", ()=>{
+    renderUpcoming();
+    renderAlerts();
+  });
+</script>
+</body>
+</html>

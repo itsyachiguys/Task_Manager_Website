@@ -1,0 +1,223 @@
+<!-- projects page - create and manage project checklists with sample data -->
+<!-- features project creation, checklist management, and modal-based editing -->
+<!-- integrates with app.js for shared utilities and localStorage operations -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <!-- meta tags for responsive design and character encoding -->
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1"/>
+  <!-- page title for browser tab identification -->
+  <title>Projects - Pastel Tasks</title>
+  <!-- external stylesheet for visual styling -->
+  <link rel="stylesheet" href="style.css"/>
+</head>
+<body>
+  <!-- header section - branding and navigation -->
+  <header class="header">
+    <div class="brand">
+      <div class="logo">✨</div>
+      <div>
+        <div class="brand-title">Hello, Yachi!</div>
+        <div class="brand-subtitle">Focus • Plan • Bloom</div>
+      </div>
+    </div>
+    <nav class="nav">
+      <a href="index.html">Home</a>
+      <a href="pomodoro.html">Pomodoro</a>
+      <a href="manage.html">Manage Tasks</a>
+      <a href="results.html">Results</a>
+      <a href="projects.html" class="active">Projects</a>
+    </nav>
+  </header>
+
+  <!-- main content container - project creation and management interface -->
+  <div class="main-container">
+    <!-- project creation card - form for adding new projects and loading samples -->
+    <div class="card">
+      <div class="h1">Create Project</div>
+      <!-- project title input and add button -->
+      <div class="form-row">
+        <input id="projTitle" class="input" placeholder="Project name"/>
+        <button id="addProj" class="btn">Add Project</button>
+      </div>
+      <!-- button to load sample projects for demonstration -->
+      <div class="form-row">
+        <button id="loadSamples" class="btn secondary">Load Sample Projects</button>
+      </div>
+      <!-- container for displaying project list -->
+      <div id="projectsList" class="project-list"></div>
+    </div>
+  </div>
+
+<!-- external scripts - load shared app logic and page-specific functionality -->
+<script src="app.js"></script>
+<script>
+  // constants and utility functions - project data management
+  const PROJ_KEY = App.KEY_PROJECTS;
+  function loadProjects(){ return JSON.parse(localStorage.getItem(PROJ_KEY) || "[]"); }
+  function saveProjects(p){ localStorage.setItem(PROJ_KEY, JSON.stringify(p)); }
+
+  // dom element references - get references to form inputs and ui elements
+  const titleInput = document.getElementById("projTitle");
+  const addBtn = document.getElementById("addProj");
+  const list = document.getElementById("projectsList");
+
+  // project rendering function - creates and displays project cards with open and delete buttons
+  function renderProjects(){
+    list.innerHTML="";
+    const p = loadProjects();
+    p.forEach((proj, idx)=>{
+      const card = App.el("div","project-card");
+      card.innerHTML = `<div style="display:flex;justify-content:space-between;align-items:center">
+        <div>
+          <div style="font-weight:800;color:#5a2f45">${proj.title}</div>
+          <div class="small">${proj.items.length} checklist items</div>
+        </div>
+        <div style="display:flex;gap:8px;align-items:center">
+          <button class="btn secondary" data-idx="${idx}">Open</button>
+          <button class="btn" style="background:#e86a7a" data-del="${idx}">Delete</button>
+        </div>
+      </div>`;
+      list.appendChild(card);
+    });
+    if(p.length===0) list.innerHTML="<div class='small'>No projects yet. Add one!</div>"
+    // attach event handlers for open and delete buttons
+    document.querySelectorAll("[data-idx]").forEach(btn=>{
+      btn.onclick = ()=> openProject(parseInt(btn.dataset.idx));
+    });
+    document.querySelectorAll("[data-del]").forEach(btn=>{
+      btn.onclick = ()=>{ if(confirm("Delete project?")){ const p=loadProjects(); p.splice(parseInt(btn.dataset.del),1); saveProjects(p); renderProjects(); } };
+    });
+  }
+
+  // event listeners - handle form submission and sample loading
+  addBtn.addEventListener("click", ()=>{
+    const t = titleInput.value.trim(); if(!t) return;
+    const p = loadProjects();
+    p.push({title:t, items:[]});
+    saveProjects(p);
+    titleInput.value="";
+    renderProjects();
+  });
+
+  // load sample projects button - populates with predefined project templates
+  document.getElementById("loadSamples").addEventListener("click", ()=>{
+    const samples = [
+      {
+        title: "Web Development Portfolio",
+        items: [
+          {text: "Design homepage layout", done: true},
+          {text: "Implement responsive navigation", done: true},
+          {text: "Add contact form functionality", done: false},
+          {text: "Optimize for mobile devices", done: false},
+          {text: "Deploy to hosting platform", done: false}
+        ]
+      },
+      {
+        title: "Mobile App Development",
+        items: [
+          {text: "Set up React Native environment", done: true},
+          {text: "Create app wireframes", done: true},
+          {text: "Implement user authentication", done: false},
+          {text: "Add push notifications", done: false},
+          {text: "Test on multiple devices", done: false}
+        ]
+      },
+      {
+        title: "Data Science Analysis",
+        items: [
+          {text: "Collect and clean dataset", done: true},
+          {text: "Perform exploratory data analysis", done: true},
+          {text: "Build predictive model", done: false},
+          {text: "Create data visualizations", done: false},
+          {text: "Write analysis report", done: false}
+        ]
+      }
+    ];
+    saveProjects(samples);
+    renderProjects();
+  });
+
+  // modal functionality - opens project in new window with checklist editing
+  function openProject(idx){
+    const p = loadProjects(); const proj = p[idx];
+    const modal = window.open("", "_blank", "width=520,height=640");
+    modal.document.write(`<html><head><title>${proj.title}</title><link rel="stylesheet" href="style.css"></head><body style="background:var(--bg)"><div style="padding:18px">`);
+    modal.document.write(`<h2 style="color:#5a2f45">${proj.title}</h2><div id="items"></div><div style="margin-top:12px"><input id='ni' placeholder='New item' style='padding:8px;border-radius:8px;border:1px solid #ddd'/> <button id='add' class='btn'>Add</button></div>`);
+    modal.document.write(`<script>
+      const p = ${JSON.stringify(proj)};
+      function render(){ const out=document.getElementById('items'); out.innerHTML=''; p.items.forEach((it,i)=>{ const div=document.createElement('div'); div.style.padding='8px'; div.style.marginTop='6px'; div.style.border='1px solid rgba(0,0,0,0.04)'; div.style.borderRadius='8px'; div.innerHTML= \`<input type='checkbox' \${it.done? 'checked':''} onchange='p.items[\${i}].done=this.checked; saveProject(); render();'/> \${it.text}\`; out.appendChild(div); }); }
+      render();
+      function saveProject(){
+        const projects = JSON.parse(localStorage.getItem('${PROJ_KEY}') || '[]');
+        projects[${idx}] = p;
+        localStorage.setItem('${PROJ_KEY}', JSON.stringify(projects));
+        if(window.opener && !window.opener.closed){
+          window.opener.postMessage({type: 'updateProject', data: {index: ${idx}, project: p}}, '*');
+        }
+      }
+      document.getElementById('add').onclick=()=>{ const v=document.getElementById('ni').value.trim(); if(!v) return; p.items.push({text:v,done:false}); document.getElementById('ni').value=''; saveProject(); render(); }
+    <\/script>`);
+    modal.document.write("</div></body></html>");
+    modal.focus();
+  }
+
+  // message handling - listens for updates from project modals
+  window.addEventListener('message', (event) => {
+    if(event.data.type === 'updateProject'){
+      const projects = loadProjects();
+      projects[event.data.data.index] = event.data.data.project;
+      saveProjects(projects);
+      renderProjects();
+    }
+  });
+
+  // initialization functions - load sample projects and render on page load
+  function addSampleProjects(){
+    const existing = loadProjects();
+    if(existing.length === 0){
+      const samples = [
+        {
+          title: "Web Development Portfolio",
+          items: [
+            {text: "Design homepage layout", done: true},
+            {text: "Implement responsive navigation", done: true},
+            {text: "Add contact form functionality", done: false},
+            {text: "Optimize for mobile devices", done: false},
+            {text: "Deploy to hosting platform", done: false}
+          ]
+        },
+        {
+          title: "Mobile App Development",
+          items: [
+            {text: "Set up React Native environment", done: true},
+            {text: "Create app wireframes", done: true},
+            {text: "Implement user authentication", done: false},
+            {text: "Add push notifications", done: false},
+            {text: "Test on multiple devices", done: false}
+          ]
+        },
+        {
+          title: "Data Science Analysis",
+          items: [
+            {text: "Collect and clean dataset", done: true},
+            {text: "Perform exploratory data analysis", done: true},
+            {text: "Build predictive model", done: false},
+            {text: "Create data visualizations", done: false},
+            {text: "Write analysis report", done: false}
+          ]
+        }
+      ];
+      saveProjects(samples);
+    }
+  }
+
+  // page initialization - load samples and render projects when DOM is ready
+  document.addEventListener("DOMContentLoaded", () => {
+    addSampleProjects();
+    renderProjects();
+  });
+</script>
+</body>
+</html>

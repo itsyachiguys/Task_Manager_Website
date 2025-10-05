@@ -1,0 +1,973 @@
+/* Enhanced Pastel theme - shared styles with animations - this file contains all the styling for my task manager app, creating a beautiful and functional interface. */
+
+/* these are the main color variables that define the pastel theme. i chose soft, calming colors that are easy on the eyes and create a pleasant user experience. */
+:root{
+  --bg:#fff8fb; /* soft pinkish background color */
+  --card:#fff3f8; /* slightly lighter pink for cards */
+  --muted:#8b6b7a; /* muted purple-gray for secondary text */
+  --accent:#ff6b9d; /* vibrant pink - the main accent color */
+  --accent-2:#ff8fab; /* bright blush - secondary accent */
+  --accent-3:#4ecdc4; /* vibrant mint - for variety */
+  --accent-4:#ffe66d; /* bright yellow - for highlights */
+  --accent-5:#b19cd9; /* vibrant purple - for special elements */
+  --accent-6:#ffaaa5; /* coral pink - for warmth */
+  --shadow: 0 8px 20px rgba(133,98,120,0.12); /* subtle shadow for depth */
+  --shadow-hover: 0 12px 30px rgba(133,98,120,0.2); /* deeper shadow on hover */
+  --glass: rgba(255,255,255,0.7); /* glass effect for modern look */
+  --font: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif; /* clean, readable font stack */
+
+  /* Animation variables - these control how smooth the transitions feel */
+  --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); /* smooth easing for interactions */
+  --bounce: cubic-bezier(0.68, -0.55, 0.265, 1.55); /* bouncy animation curve */
+}
+
+/* Dark mode - for users who prefer darker interfaces, especially at night or in low-light environments */
+body.dark {
+  --bg: #1e1e1e; /* dark background */
+  --card: #2c2c2c; /* slightly lighter dark for cards */
+  --muted: #a0a0a0; /* light gray for secondary text */
+  --accent: #ff6b9d; /* vibrant pink - the main accent color */
+  --accent-2: #ff8fab; /* bright blush - secondary accent */
+  --accent-3: #4ecdc4; /* vibrant mint - for variety */
+  --accent-4: #ffe66d; /* bright yellow - for highlights */
+  --accent-5: #b19cd9; /* vibrant purple - for special elements */
+  --accent-6: #ffaaa5; /* coral pink - for warmth */
+  --shadow: 0 8px 20px rgba(0,0,0,0.7); /* stronger shadows for dark mode */
+  --shadow-hover: 0 12px 30px rgba(0,0,0,0.9); /* even stronger shadows on hover */
+  --glass: rgba(44,44,44,0.7); /* darker glass effect */
+  color: #ddd; /* light text color */
+  background: linear-gradient(180deg, #121212 0%, #1e1e1e 50%, #2a2a2a 100%); /* dark gradient background */
+}
+
+/* Grey mode - a neutral, professional look that's easy on the eyes */
+body.grey {
+  --bg: #f0f0f0; /* neutral gray background */
+  --card: #e0e0e0; /* slightly lighter gray for cards */
+  --muted: #666666; /* medium gray for secondary text */
+  --accent: #999999; /* muted gray accent */
+  --accent-2: #bbbbbb; /* lighter gray secondary accent */
+  --accent-3: #cccccc; /* light gray for variety */
+  --accent-4: #dddddd; /* very light gray for highlights */
+  --accent-5: #eeeeee; /* almost white for special elements */
+  --accent-6: #aaaaaa; /* medium-light gray for warmth */
+  --shadow: 0 8px 20px rgba(100,100,100,0.2); /* subtle gray shadows */
+  --shadow-hover: 0 12px 30px rgba(100,100,100,0.3); /* slightly stronger gray shadows on hover */
+  --glass: rgba(224,224,224,0.7); /* gray glass effect */
+  color: #333; /* dark text color */
+  background: linear-gradient(180deg, #e0e0e0 0%, #f0f0f0 50%, #f8f8f8 100%); /* neutral gray gradient */
+}
+
+/* White mode (default) - the bright, clean default theme */
+body.white {
+  --bg:#fff8fb; /* soft pinkish background */
+  --card:#fff3f8; /* slightly lighter pink for cards */
+  --muted:#8b6b7a; /* muted purple-gray for secondary text */
+  --accent:#ff6b9d; /* vibrant pink - the main accent color */
+  --accent-2:#ff8fab; /* bright blush - secondary accent */
+  --accent-3:#4ecdc4; /* vibrant mint - for variety */
+  --accent-4:#ffe66d; /* bright yellow - for highlights */
+  --accent-5:#b19cd9; /* vibrant purple - for special elements */
+  --accent-6:#ffaaa5; /* coral pink - for warmth */
+  --shadow: 0 8px 20px rgba(133,98,120,0.12); /* subtle shadow for depth */
+  --shadow-hover: 0 12px 30px rgba(133,98,120,0.2); /* deeper shadow on hover */
+  --glass: rgba(255,255,255,0.7); /* glass effect for modern look */
+  color:#422c3a; /* warm dark text color */
+  background: linear-gradient(180deg, #fff8fb 0%, #fffaf6 50%, #f8f9fa 100%); /* soft gradient background */
+}
+
+/* Base styles - fundamental CSS reset and body styling */
+*{box-sizing:border-box} /* ensures padding and border are included in element dimensions */
+body{
+  margin:0; /* removes default margin */
+  font-family:var(--font); /* uses our custom font stack */
+  background: linear-gradient(180deg, #fff8fb 0%, #fffaf6 50%, #f8f9fa 100%); /* soft gradient background */
+  color:#422c3a; /* warm text color */
+  -webkit-font-smoothing:antialiased; /* smooths fonts on webkit browsers */
+  -moz-osx-font-smoothing:grayscale; /* smooths fonts on firefox */
+  position:relative; /* for positioning context */
+  overflow-x:hidden; /* prevents horizontal scrolling */
+}
+
+/* Animated background elements - creates subtle floating orbs for visual interest */
+body::before {
+  content:''; /* creates pseudo-element */
+  position:fixed; /* stays in place during scroll */
+  top:0;
+  left:0;
+  width:100%;
+  height:100%;
+  background:
+    radial-gradient(circle at 20% 20%, rgba(255,107,157,0.15) 0%, transparent 50%), /* pink orb top-left */
+    radial-gradient(circle at 80% 80%, rgba(78,205,196,0.12) 0%, transparent 50%), /* mint orb bottom-right */
+    radial-gradient(circle at 40% 60%, rgba(177,156,217,0.1) 0%, transparent 50%); /* purple orb center */
+  z-index:-2; /* behind all content */
+  animation: float 20s ease-in-out infinite; /* gentle floating animation */
+}
+
+/* Keyframe animation for the floating background effect */
+@keyframes float {
+  0%, 100% { transform: translateY(0px) rotate(0deg); } /* start and end positions */
+  50% { transform: translateY(-10px) rotate(1deg); } /* middle position with slight rotation */
+}
+
+/* Header / nav - the top navigation bar that stays fixed at the top of the page */
+.header{
+  display:flex; /* flexbox layout for header items */
+  align-items:center; /* vertically center all items */
+  justify-content:space-between; /* space between brand and nav */
+  padding:18px 24px; /* generous padding for breathing room */
+  background:linear-gradient(135deg,var(--accent-2) 0%, #fff6f9 60%, var(--accent-6) 100%); /* beautiful gradient background */
+  border-bottom:1px solid rgba(0,0,0,0.04); /* subtle bottom border */
+  position:sticky; /* stays at top when scrolling */
+  top:0; /* sticks to top of viewport */
+  z-index:20; /* high z-index to stay above other content */
+  backdrop-filter: blur(10px); /* glassmorphism effect */
+  box-shadow: var(--shadow); /* subtle shadow for depth */
+}
+
+.brand{
+  display:flex; /* flexbox for brand elements */
+  gap:12px; /* space between logo and text */
+  align-items:center; /* center vertically */
+}
+
+.logo{
+  width:48px; /* logo dimensions */
+  height:48px;
+  border-radius:14px; /* rounded corners */
+  background:linear-gradient(135deg, var(--accent), var(--accent-2)); /* gradient background */
+  box-shadow:var(--shadow); /* shadow for depth */
+  display:flex; /* center the logo content */
+  align-items:center; /* vertical centering */
+  justify-content:center; /* horizontal centering */
+  font-weight:800; /* bold text */
+  color:#73264b; /* dark pink color */
+  font-size:20px; /* logo text size */
+  position:relative; /* for positioning context */
+  overflow:hidden; /* hide overflow content */
+  transition: var(--transition); /* smooth transitions */
+}
+
+.logo::before {
+  content:'✨'; /* sparkle emoji that appears on hover */
+  position:absolute; /* absolute positioning */
+  font-size:16px; /* sparkle size */
+  opacity:0; /* initially hidden */
+  transition: var(--transition); /* smooth transition */
+}
+
+.logo:hover {
+  transform: scale(1.1) rotate(5deg); /* scale up and rotate on hover */
+  box-shadow: var(--shadow-hover); /* stronger shadow on hover */
+  animation: sparkle 0.6s ease-in-out; /* sparkle animation */
+}
+
+.logo:hover::before {
+  opacity:1; /* show sparkle on hover */
+  transform: translateY(-20px); /* move sparkle up */
+}
+
+/* Keyframe animation for the logo sparkle effect */
+@keyframes sparkle {
+  0%, 100% { transform: scale(1) rotate(0deg); } /* start and end states */
+  25% { transform: scale(1.1) rotate(5deg); } /* quarter point */
+  50% { transform: scale(1.05) rotate(-3deg); } /* middle point */
+  75% { transform: scale(1.1) rotate(2deg); } /* three-quarter point */
+}
+
+.brand-title {
+  font-weight:700; /* bold title */
+  color:#5a2f45; /* warm purple color */
+  font-size:18px; /* title size */
+}
+
+.brand-subtitle {
+  font-size:12px; /* smaller subtitle */
+  color:var(--muted); /* muted color for subtitle */
+  margin-top:2px; /* small top margin */
+}
+
+.nav{
+  display:flex; /* flexbox for navigation links */
+  gap:12px; /* space between nav items */
+  align-items:center; /* center vertically */
+}
+
+.nav a{
+  text-decoration:none; /* remove underline */
+  color:var(--muted); /* muted text color */
+  padding:10px 16px; /* padding for clickable area */
+  border-radius:12px; /* rounded corners */
+  font-weight:600; /* semi-bold text */
+  transition: var(--transition); /* smooth transitions */
+  position:relative; /* for positioning context */
+  overflow:hidden; /* hide overflow */
+}
+
+.nav a::before {
+  content:''; /* creates pseudo-element for shine effect */
+  position:absolute; /* absolute positioning */
+  top:0;
+  left:-100%; /* starts off-screen to the left */
+  width:100%;
+  height:100%;
+  background:linear-gradient(90deg, transparent, rgba(255,255,255,0.4), transparent); /* shine gradient */
+  transition: left 0.5s; /* smooth left movement */
+}
+
+.nav a:hover::before {
+  left:100%; /* moves shine across on hover */
+}
+
+.nav a.active, .nav a:hover{
+  background:linear-gradient(135deg, var(--accent-2), var(--accent-6)); /* gradient background on hover/active */
+  color:#6b2b46; /* darker text color */
+  box-shadow: var(--shadow); /* shadow for depth */
+  transform: translateY(-2px); /* slight lift effect */
+}
+
+/* Page container - main layout wrapper for the application */
+.container{
+  max-width:1100px; /* maximum width for content */
+  margin:22px auto; /* center the container */
+  padding:18px; /* padding around content */
+  display:grid; /* CSS grid layout */
+  grid-template-columns: 1fr 360px; /* main content area and sidebar */
+  gap:22px; /* space between grid areas */
+}
+
+/* Enhanced card - reusable component for content sections */
+.card{
+  background:var(--card); /* card background color */
+  border-radius:18px; /* rounded corners */
+  padding:20px; /* internal padding */
+  box-shadow:var(--shadow); /* shadow for depth */
+  border:1px solid rgba(255,255,255,0.8); /* subtle border */
+  transition: var(--transition); /* smooth transitions */
+  position:relative; /* for positioning context */
+  overflow:hidden; /* hide overflow content */
+}
+
+.card::before {
+  content:''; /* creates pseudo-element for top accent */
+  position:absolute; /* absolute positioning */
+  top:0;
+  left:0;
+  right:0;
+  height:4px; /* height of accent bar */
+  background:linear-gradient(90deg, var(--accent), var(--accent-3), var(--accent-5)); /* colorful gradient */
+  opacity:0; /* initially hidden */
+  transition: var(--transition); /* smooth transition */
+}
+
+.card:hover {
+  transform: translateY(-4px); /* lift effect on hover */
+  box-shadow: var(--shadow-hover); /* stronger shadow on hover */
+}
+
+.card:hover::before {
+  opacity:1; /* show accent bar on hover */
+}
+
+/* Enhanced buttons - interactive button components */
+.btn{
+  display:inline-block; /* inline-block for sizing */
+  background:linear-gradient(135deg, var(--accent), var(--accent-2)); /* gradient background */
+  color:#6b2540; /* text color */
+  padding:12px 20px; /* padding for clickable area */
+  border-radius:14px; /* rounded corners */
+  border:none; /* remove default border */
+  cursor:pointer; /* pointer cursor */
+  font-weight:700; /* bold text */
+  box-shadow: var(--shadow); /* shadow for depth */
+  transition: var(--transition); /* smooth transitions */
+  position:relative; /* for positioning context */
+  overflow:hidden; /* hide overflow */
+  min-width:80px; /* minimum width */
+}
+
+.btn::before {
+  content:''; /* creates pseudo-element for shine effect */
+  position:absolute; /* absolute positioning */
+  top:0;
+  left:-100%; /* starts off-screen */
+  width:100%;
+  height:100%;
+  background:linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent); /* shine gradient */
+  transition: left 0.6s; /* smooth movement */
+}
+
+.btn:hover {
+  transform: translateY(-2px) scale(1.05); /* lift and scale on hover */
+  box-shadow: var(--shadow-hover); /* stronger shadow on hover */
+}
+
+.btn:hover::before {
+  left:100%; /* moves shine across on hover */
+}
+
+.btn:active {
+  transform: translateY(0) scale(0.98); /* press down effect */
+}
+
+.btn.secondary{
+  background:linear-gradient(135deg, var(--accent-3), var(--accent-4)); /* secondary color scheme */
+  color:#255945; /* different text color */
+  box-shadow: var(--shadow); /* shadow for depth */
+}
+
+/* Enhanced inputs - form input styling */
+.input, textarea, select{
+  padding:12px 16px; /* padding for comfortable typing */
+  border-radius:12px; /* rounded corners */
+  border:2px solid rgba(0,0,0,0.06); /* subtle border */
+  background:rgba(255,255,255,0.9); /* semi-transparent background */
+  font-size:14px; /* readable font size */
+  color:#4a2c39; /* text color */
+  transition: var(--transition); /* smooth transitions */
+  backdrop-filter: blur(5px); /* glassmorphism effect */
+}
+
+.input:focus, textarea:focus, select:focus{
+  outline:none; /* remove default outline */
+  border-color:var(--accent); /* accent color border on focus */
+  box-shadow: 0 0 0 4px rgba(255,107,157,0.2); /* focus ring */
+  transform: translateY(-2px); /* slight lift on focus */
+}
+
+/* Small components - basic typography and layout utilities */
+.h1{
+  font-size:22px; /* main heading size */
+  margin:0 0 12px 0; /* remove default margins */
+  color:#5a2f45; /* heading color */
+  font-weight:700; /* bold weight */
+  position:relative; /* for positioning context */
+}
+
+.small{
+  font-size:13px; /* small text size */
+  color:#6b495b; /* muted color for secondary text */
+}
+
+.row{
+  display:flex; /* flexbox layout */
+  gap:12px; /* space between items */
+  align-items:center; /* center items vertically */
+}
+
+/* Home left column list - upcoming tasks display */
+.upcoming-list{
+  display:flex; /* flexbox layout */
+  flex-direction:column; /* vertical stacking */
+  gap:12px; /* space between items */
+}
+
+.up-item{
+  display:flex; /* flexbox layout */
+  justify-content:space-between; /* space between content and actions */
+  align-items:center; /* center items vertically */
+  padding:16px; /* internal padding */
+  border-radius:14px; /* rounded corners */
+  background:linear-gradient(180deg, #fff, #fff8fb); /* subtle gradient background */
+  border:1px solid rgba(0,0,0,0.03); /* very subtle border */
+  transition: var(--transition); /* smooth transitions */
+}
+
+.up-item:hover {
+  transform: translateY(-2px); /* lift effect on hover */
+  box-shadow: var(--shadow); /* shadow on hover */
+}
+
+.up-left{
+  display:flex; /* flexbox for left content */
+  gap:12px; /* space between elements */
+  align-items:center; /* center vertically */
+}
+
+.badge-prio{
+  padding:8px 12px; /* padding for badge */
+  border-radius:10px; /* rounded corners */
+  font-weight:700; /* bold text */
+  font-size:12px; /* small text size */
+  text-transform:uppercase; /* uppercase text */
+  letter-spacing:0.5px; /* letter spacing */
+}
+
+.pr-high{
+  background:linear-gradient(135deg, #ff9a9e, #fecfef); /* red gradient for high priority */
+  color:#8a1a2a; /* dark red text */
+  box-shadow: 0 4px 12px rgba(255,154,158,0.3); /* shadow with red tint */
+}
+
+.pr-med{
+  background:linear-gradient(135deg, #ffecd2, #fcb69f); /* orange gradient for medium priority */
+  color:#6b3a00; /* dark orange text */
+  box-shadow: 0 4px 12px rgba(252,182,159,0.3); /* shadow with orange tint */
+}
+
+.pr-low{
+  background:linear-gradient(135deg, #a8edea, #fed6e3); /* green gradient for low priority */
+  color:#1f6f4b; /* dark green text */
+  box-shadow: 0 4px 12px rgba(168,237,234,0.3); /* shadow with green tint */
+}
+
+/* Progress mini - small progress bars for task completion */
+.mini-progress{
+  height:10px; /* progress bar height */
+  background:#f6eaf0; /* light pink background */
+  border-radius:20px; /* fully rounded */
+  overflow:hidden; /* hide overflow */
+  margin-top:8px; /* space above progress bar */
+  position:relative; /* for positioning context */
+}
+
+.mini-fill{
+  height:100%; /* fill entire height */
+  background:linear-gradient(90deg, #ff85b8, #ffb7db); /* pink gradient fill */
+  width:0%; /* starts at 0% width */
+  transition: width 0.8s ease; /* smooth width animation */
+  position:relative; /* for positioning context */
+}
+
+.mini-fill::after {
+  content:''; /* creates pseudo-element for shimmer effect */
+  position:absolute; /* absolute positioning */
+  top:0;
+  left:0;
+  right:0;
+  bottom:0;
+  background:linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent); /* shimmer gradient */
+  animation: shimmer 2s infinite; /* continuous shimmer animation */
+}
+
+/* Keyframe animation for the shimmer effect */
+@keyframes shimmer {
+  0% { transform: translateX(-100%); } /* starts off-screen left */
+  100% { transform: translateX(100%); } /* moves to off-screen right */
+}
+
+/* Quotes - inspirational quote display styling */
+.quote{
+  font-style:italic; /* italic text for quotes */
+  color:#5a2f45; /* warm purple color */
+  background:linear-gradient(135deg, rgba(255,255,255,0.8), rgba(255,214,232,0.6)); /* soft gradient background */
+  padding:16px; /* generous padding */
+  border-radius:14px; /* rounded corners */
+  border:2px dashed rgba(107,68,86,0.1); /* subtle dashed border */
+  position:relative; /* for positioning context */
+  transition: var(--transition); /* smooth transitions */
+}
+
+.quote:hover {
+  transform: translateY(-2px); /* lift effect on hover */
+  box-shadow: var(--shadow); /* shadow on hover */
+}
+
+/* Quick AI shortcuts - AI-powered quick action buttons */
+.shortcuts{
+  display:flex; /* flexbox layout */
+  flex-direction:column; /* vertical stacking */
+  gap:10px; /* space between shortcuts */
+  margin-top:16px; /* space above shortcuts */
+}
+
+.shortcut{
+  display:flex; /* flexbox layout */
+  align-items:center; /* center items vertically */
+  gap:12px; /* space between icon and text */
+  padding:12px; /* internal padding */
+  border-radius:12px; /* rounded corners */
+  background:linear-gradient(135deg, rgba(255,255,255,0.8), rgba(255,255,255,0.4)); /* semi-transparent gradient */
+  border:1px solid rgba(0,0,0,0.02); /* very subtle border */
+  text-decoration:none; /* remove underline */
+  color:#5b2f43; /* warm purple color */
+  font-weight:600; /* semi-bold text */
+  transition: var(--transition); /* smooth transitions */
+}
+
+.shortcut:hover {
+  transform: translateY(-2px); /* lift effect on hover */
+  box-shadow: var(--shadow); /* shadow on hover */
+  background:linear-gradient(135deg, rgba(255,255,255,0.9), rgba(255,214,232,0.6)); /* enhanced gradient on hover */
+}
+
+/* Right column - sidebar styling for consistent spacing */
+.side .card{
+  margin-bottom:16px; /* space between sidebar cards */
+}
+
+/* Pomodoro soothing background - creates calming visual environment for focus sessions */
+.soothing-bg{
+  position:fixed; /* stays in place during scroll */
+  left:0;
+  right:0;
+  top:72px; /* below header */
+  height:calc(100vh - 72px); /* full viewport height minus header */
+  z-index:-1; /* behind all content */
+  background:
+    radial-gradient(circle at 10% 10%, rgba(255,214,236,0.12), transparent 20%), /* soft pink orb top-left */
+    radial-gradient(circle at 90% 60%, rgba(198,231,217,0.08), transparent 20%); /* soft green orb bottom-right */
+  backdrop-filter: blur(6px); /* subtle blur effect */
+}
+
+/* Timer UI - large display timer for Pomodoro sessions */
+.timer-large{
+  font-size:52px; /* large, prominent timer display */
+  font-weight:800; /* bold weight for visibility */
+  color:#6b2b46; /* warm purple color */
+  text-align:center; /* center the timer text */
+  padding:20px; /* generous padding around timer */
+  background:linear-gradient(135deg, rgba(255,255,255,0.6), rgba(255,214,232,0.3)); /* soft gradient background */
+  border-radius:20px; /* rounded corners */
+  margin:20px 0; /* vertical spacing */
+  border:2px solid rgba(255,255,255,0.8); /* subtle border */
+  transition: var(--transition); /* smooth transitions */
+}
+
+.timer-large.active {
+  animation: pulse 2s infinite; /* pulsing animation when active */
+  background:linear-gradient(135deg, rgba(255,182,193,0.8), rgba(255,214,232,0.6)); /* enhanced gradient when active */
+}
+
+/* Keyframe animation for timer pulse effect */
+@keyframes pulse {
+  0%, 100% { transform: scale(1); } /* normal size at start/end */
+  50% { transform: scale(1.02); } /* slightly larger in middle */
+}
+
+.timer-controls{
+  display:flex; /* flexbox layout for control buttons */
+  gap:12px; /* space between buttons */
+  justify-content:center; /* center the controls */
+  margin-top:16px; /* space above controls */
+}
+
+/* Manage tasks page specifics - styling for task management interface */
+.form-row{
+  display:flex; /* flexbox layout for form elements */
+  gap:12px; /* space between form inputs */
+  flex-wrap:wrap; /* wrap to next line on smaller screens */
+  margin-bottom:16px; /* space below form row */
+}
+
+.progress-input{
+  max-width:100px; /* limit width of progress input field */
+}
+
+/* Task card in manage - individual task display in management interface */
+.task-card{
+  display:flex; /* flexbox layout for task content */
+  justify-content:space-between; /* space between task info and actions */
+  align-items:center; /* center items vertically */
+  padding:16px; /* internal padding */
+  border-radius:14px; /* rounded corners */
+  background:#fff; /* white background */
+  border:1px solid rgba(0,0,0,0.03); /* very subtle border */
+  margin-bottom:12px; /* space below each task card */
+  transition: var(--transition); /* smooth transitions */
+}
+
+.task-card:hover {
+  transform: translateY(-2px); /* lift effect on hover */
+  box-shadow: var(--shadow); /* shadow on hover */
+}
+
+.task-meta{
+  display:flex; /* flexbox for task metadata */
+  flex-direction:column; /* vertical stacking */
+  gap:8px; /* space between metadata elements */
+}
+
+.task-title{
+  font-weight:700; /* bold task title */
+  color:#5a2f45; /* warm purple color */
+}
+
+.task-right{
+  display:flex; /* flexbox for right-side elements */
+  gap:12px; /* space between elements */
+  align-items:center; /* center items vertically */
+}
+
+.pct-circle{
+  width:50px; /* circular progress indicator size */
+  height:50px;
+  border-radius:50%; /* fully rounded */
+  display:grid; /* CSS grid for centering */
+  place-items:center; /* center content */
+  font-weight:800; /* bold text */
+  background:linear-gradient(135deg, #ffd6e8, #fff); /* soft pink gradient */
+  color:#6b2b46; /* warm purple text */
+  border:2px solid rgba(255,255,255,0.8); /* subtle border */
+  transition: var(--transition); /* smooth transitions */
+}
+
+.pct-circle:hover {
+  transform: scale(1.1); /* scale up on hover */
+}
+
+/* Projects page checklist - styling for project management interface */
+.project-list{
+  display:flex; /* flexbox layout for project list */
+  flex-direction:column; /* vertical stacking of projects */
+  gap:12px; /* space between project cards */
+}
+
+.project-card{
+  padding:16px; /* internal padding for project cards */
+  border-radius:14px; /* rounded corners */
+  background:linear-gradient(180deg, #fff, #fff6fb); /* subtle gradient background */
+  border:1px solid rgba(0,0,0,0.03); /* very subtle border */
+  transition: var(--transition); /* smooth transitions */
+}
+
+.project-card:hover {
+  transform: translateY(-2px); /* lift effect on hover */
+  box-shadow: var(--shadow); /* shadow on hover */
+}
+
+/* Results page - styling for analytics and results display */
+.chart-wrap{
+  height:280px; /* fixed height for chart containers */
+}
+
+/* Enhanced Smart Alerts System - notification and alert components */
+.alert{
+  display:flex; /* flexbox layout for alert content */
+  align-items:center; /* center items vertically */
+  padding:16px; /* internal padding */
+  border-radius:16px; /* rounded corners */
+  margin-bottom:12px; /* space below each alert */
+  position:relative; /* for positioning context */
+  overflow:hidden; /* hide overflow content */
+  animation: slideInUp 0.6s cubic-bezier(0.4, 0, 0.2, 1); /* slide in animation */
+  box-shadow: var(--shadow); /* shadow for depth */
+  border:2px solid rgba(255,255,255,0.8); /* subtle border */
+  transition: var(--transition); /* smooth transitions */
+}
+
+.alert:hover {
+  transform: translateY(-2px); /* lift effect on hover */
+  box-shadow: var(--shadow-hover); /* stronger shadow on hover */
+}
+
+.alert-icon {
+  font-size:24px; /* icon size */
+  margin-right:12px; /* space to the right */
+  animation: bounce 2s infinite; /* bouncing animation */
+}
+
+.alert-content {
+  flex:1; /* take up remaining space */
+}
+
+.alert-content strong {
+  display:block; /* block display for title */
+  font-size:14px; /* title font size */
+  margin-bottom:4px; /* space below title */
+}
+
+.alert-subtitle {
+  font-size:12px; /* subtitle font size */
+  opacity:0.8; /* slightly transparent */
+  font-weight:400; /* normal weight */
+}
+
+.alert-dismiss {
+  background:none; /* no background */
+  border:none; /* no border */
+  font-size:16px; /* dismiss button size */
+  cursor:pointer; /* pointer cursor */
+  padding:4px 8px; /* padding for clickable area */
+  border-radius:50%; /* fully rounded */
+  color:inherit; /* inherit text color */
+  opacity:0.6; /* slightly transparent */
+  transition: var(--transition); /* smooth transitions */
+  margin-left:8px; /* space to the left */
+}
+
+.alert-dismiss:hover {
+  opacity:1; /* fully opaque on hover */
+  background:rgba(255,255,255,0.2); /* subtle background on hover */
+}
+
+/* Alert Types - different styles for various alert severities */
+.alert.critical {
+  background:linear-gradient(135deg, #ff9a9e, #fecfef); /* red gradient for critical alerts */
+  color:#8a1a2a; /* dark red text */
+  border-color: rgba(255,154,158,0.3); /* red-tinted border */
+  animation: pulseRed 2s infinite; /* pulsing animation for urgency */
+}
+
+.alert.warning {
+  background:linear-gradient(135deg, #ffecd2, #fcb69f); /* orange gradient for warnings */
+  color:#6b3a00; /* dark orange text */
+  border-color: rgba(252,182,159,0.3); /* orange-tinted border */
+}
+
+.alert.success {
+  background:linear-gradient(135deg, #a8edea, #fed6e3); /* green gradient for success */
+  color:#1f6f4b; /* dark green text */
+  border-color: rgba(168,237,234,0.3); /* green-tinted border */
+}
+
+.alert.info {
+  background:linear-gradient(135deg, #e8d5f2, #f7e7c6); /* purple gradient for info */
+  color:#5a2f45; /* dark purple text */
+  border-color: rgba(232,213,242,0.3); /* purple-tinted border */
+}
+
+/* Enhanced Animations - keyframe definitions for various UI animations */
+@keyframes slideInUp {
+  from {
+    opacity:0; /* start invisible */
+    transform: translateY(20px) scale(0.9); /* start below and smaller */
+  }
+  to {
+    opacity:1; /* end fully visible */
+    transform: translateY(0) scale(1); /* end at normal position and size */
+  }
+}
+
+@keyframes bounce {
+  0%, 20%, 50%, 80%, 100% {
+    transform: translateY(0); /* normal position at key points */
+  }
+  40% {
+    transform: translateY(-3px); /* peak of bounce */
+  }
+  60% {
+    transform: translateY(-2px); /* secondary bounce */
+  }
+}
+
+@keyframes pulseRed {
+  0%, 100% {
+    box-shadow: 0 0 0 0 rgba(255,154,158,0.4); /* start with no shadow */
+  }
+  50% {
+    box-shadow: 0 0 0 8px rgba(255,154,158,0); /* expand shadow to full size */
+  }
+}
+
+/* Enhanced Responsive Design - media queries for different screen sizes */
+@media (max-width:980px){
+  .container{
+    grid-template-columns:1fr; /* single column layout on tablets */
+    padding:12px; /* reduced padding */
+    gap:16px; /* smaller gap */
+  }
+  .nav{
+    display:none; /* hide navigation on smaller screens */
+  }
+  .header{
+    padding:12px; /* reduced header padding */
+  }
+  .logo{
+    width:44px; /* smaller logo */
+    height:44px;
+    font-size:18px; /* smaller logo text */
+  }
+  .timer-large{
+    font-size:42px; /* smaller timer display */
+  }
+  .form-row{
+    flex-direction:column; /* stack form elements vertically */
+    gap:8px; /* smaller gap */
+  }
+  .timer-buttons{
+    gap:6px !important; /* smaller button gaps */
+  }
+  .timer-btn{
+    padding:8px 12px; /* smaller button padding */
+    font-size:12px; /* smaller button text */
+  }
+}
+
+@media (max-width:768px){
+  .header{
+    flex-direction:column;
+    gap:12px;
+    text-align:center;
+  }
+  .brand{
+    justify-content:center;
+  }
+  .container{
+    padding:8px;
+    margin:16px auto;
+  }
+  .card{
+    padding:16px;
+  }
+  .h1{
+    font-size:20px;
+  }
+  .timer-large{
+    font-size:36px;
+    padding:16px;
+  }
+  .timer-controls{
+    flex-direction:column;
+    gap:8px;
+  }
+  .btn{
+    width:100%;
+    justify-content:center;
+  }
+  .task-card{
+    flex-direction:column;
+    align-items:stretch;
+    gap:12px;
+  }
+  .task-right{
+    justify-content:space-between;
+    width:100%;
+  }
+  .pct-circle{
+    width:40px;
+    height:40px;
+    font-size:12px;
+  }
+  .up-item{
+    flex-direction:column;
+    align-items:stretch;
+    gap:8px;
+  }
+  .up-left{
+    width:100%;
+  }
+  .shortcuts{
+    gap:8px;
+  }
+  .shortcut{
+    padding:10px;
+  }
+  .alert{
+    padding:12px;
+  }
+  .alert-content strong{
+    font-size:13px;
+  }
+  .alert-subtitle{
+    font-size:11px;
+  }
+}
+
+@media (max-width:480px){
+  .brand-title{
+    font-size:16px;
+  }
+  .brand-subtitle{
+    font-size:11px;
+  }
+  .logo{
+    width:40px;
+    height:40px;
+    font-size:16px;
+  }
+  .timer-large{
+    font-size:28px;
+    padding:12px;
+  }
+  .timer-buttons{
+    gap:4px !important;
+  }
+  .timer-btn{
+    padding:6px 8px;
+    font-size:11px;
+  }
+  .input, textarea, select{
+    padding:10px 12px;
+    font-size:13px;
+  }
+  .btn{
+    padding:10px 16px;
+    font-size:13px;
+  }
+  .small{
+    font-size:12px;
+  }
+  .h1{
+    font-size:18px;
+  }
+  .card{
+    padding:14px;
+  }
+  .alert{
+    padding:10px;
+  }
+  .alert-icon{
+    font-size:20px;
+  }
+  .alert-content strong{
+    font-size:12px;
+  }
+  .alert-subtitle{
+    font-size:10px;
+  }
+}
+
+/* Mobile-first touch improvements - accessibility for touch devices */
+@media (hover: none) and (pointer: coarse) {
+  .btn, .nav a, .shortcut, .timer-btn{
+    min-height:44px; /* minimum touch target size */
+    min-width:44px; /* minimum touch target width */
+    display:flex; /* ensure proper layout */
+    align-items:center; /* center content vertically */
+    justify-content:center; /* center content horizontally */
+  }
+  .logo{
+    min-height:44px; /* ensure logo is touchable */
+    min-width:44px; /* ensure logo has proper touch area */
+  }
+  .alert-dismiss{
+    min-height:32px; /* smaller but still accessible touch target */
+    min-width:32px; /* smaller but still accessible touch target */
+  }
+  /* Increase touch targets - ensure all interactive elements are easily tappable */
+  .task-card, .up-item, .project-card{
+    min-height:60px; /* larger touch areas for cards */
+  }
+}
+
+/* High contrast mode support - accessibility for users with visual impairments */
+@media (prefers-contrast: high) {
+  :root{
+    --accent:#d63031; /* high contrast red accent */
+    --accent-2:#e17055; /* high contrast orange secondary */
+    --accent-3:#00b894; /* high contrast green tertiary */
+    --muted:#2d3436; /* high contrast dark gray for text */
+  }
+  .card{
+    border:2px solid var(--muted); /* stronger borders for visibility */
+  }
+  .btn{
+    border:2px solid transparent; /* transparent border by default */
+  }
+  .btn:hover{
+    border-color:var(--muted); /* visible border on hover for better feedback */
+  }
+}
+
+/* Reduced motion support - accessibility for users sensitive to motion */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important; /* disable animations */
+    animation-iteration-count: 1 !important; /* prevent looping animations */
+    transition-duration: 0.01ms !important; /* disable transitions */
+  }
+  .timer-large.active {
+    animation: none; /* disable timer pulse animation */
+  }
+  .logo:hover {
+    animation: none; /* disable logo sparkle animation */
+  }
+}
+
+/* Additional utility classes - helper classes for common spacing and layout needs */
+.margin-top-14 { margin-top:14px; }
+.mb-8 { margin-bottom:8px; }
+.row-margin-top { margin-top:16px; }
+.card-margin-top { margin-top:20px; }
+.quote-margin-top { margin-top:12px; }

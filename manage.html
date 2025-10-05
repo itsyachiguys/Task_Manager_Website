@@ -1,0 +1,224 @@
+<!-- Task Management Page - Add, view, and manage tasks -->
+<!-- Features task creation, progress tracking, priority management, and data export -->
+<!-- Integrates with app.js for localStorage operations and shared utilities -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1"/>
+  <title>Manage Tasks - Pastel Tasks</title>
+  <link rel="stylesheet" href="style.css"/>
+</head>
+<body>
+  <!-- Header Section - Navigation and branding -->
+  <header class="header">
+    <div class="brand">
+      <div class="logo">✨</div>
+        <div class="brand-title">Hello, Yachi!</div>
+        <div class="brand-subtitle">Focus • Plan • Bloom</div>
+      </div>
+    </div>
+
+    <nav class="nav">
+      <a href="index.html">Home</a>
+      <a href="pomodoro.html">Pomodoro</a>
+      <a href="manage.html" class="active">Manage Tasks</a>
+      <a href="results.html">Results</a>
+      <a href="projects.html">Projects</a>
+    </nav>
+  </header>
+
+  <!-- Main Content Container - Two-column layout with main content and sidebar -->
+  <div class="container">
+    <!-- Main Content Area - Task creation form and task list -->
+    <main>
+      <!-- Task Creation Form - Allows users to add new tasks with title, description, priority, due date, and progress -->
+      <div class="card">
+        <div class="h1">📝 Add New Task</div>
+        <div class="small">Create and organize your tasks</div>
+        <p> </p>
+        <div class="form-row">
+          <input id="taskTitle" class="input" placeholder="Task title"/>
+          <input id="taskDesc" class="input" placeholder="Description (optional)"/>
+        </div>
+
+        <div class="form-row">
+          <label for="taskPriority" class="visually-hidden">Task Priority</label>
+          <select id="taskPriority" class="input">
+            <option value="Low">Low Priority</option>
+            <option value="Medium">Medium Priority</option>
+            <option value="High">High Priority</option>
+          </select>
+          <label for="taskDueDate" class="visually-hidden">Due Date</label>
+          <input id="taskDueDate" class="input" type="date" title="Due Date" placeholder="Due Date"/>
+          <input id="taskProgress" class="input progress-input" type="number" min="0" max="100" placeholder="Progress %"/>
+        </div>
+
+        <div class="form-row">
+          <button id="addTaskBtn" class="btn">Add Task</button>
+          <button id="clearFormBtn" class="btn secondary">Clear Form</button>
+        </div>
+      </div>
+
+      <!-- Task List Display - Shows all saved tasks with progress indicators and delete buttons -->
+      <div class="card card-margin-top">
+        <div class="h1">📋 Your Tasks</div>
+        <div id="tasksList"></div>
+      </div>
+    </main>
+
+    <!-- Sidebar - Task statistics and quick actions -->
+    <aside class="side">
+      <!-- Task Statistics - Displays counts of total, completed, and priority-based tasks -->
+      <div class="card">
+        <div class="h1">📊 Task Stats</div>
+        <div id="taskStats"></div>
+      </div>
+
+      <!-- Quick Actions - Bulk operations for task management -->
+      <div class="card">
+        <div class="h1">🎯 Quick Actions</div>
+        <div class="quick-actions">
+          <button class="btn" onclick="clearAllTasks()">Clear All Tasks</button>
+          <button class="btn secondary" onclick="exportTasks()">Export Tasks</button>
+        </div>
+      </div>
+    </aside>
+  </div>
+
+<!-- External Scripts - Load shared app logic and page-specific functionality -->
+<script src="app.js"></script>
+<script>
+  // DOM Element References - Get references to all form inputs and UI elements
+  const titleInput = document.getElementById("taskTitle");
+  const descInput = document.getElementById("taskDesc");
+  const prioritySelect = document.getElementById("taskPriority");
+  const dueDateInput = document.getElementById("taskDueDate");
+  const progressInput = document.getElementById("taskProgress");
+  const addBtn = document.getElementById("addTaskBtn");
+  const clearBtn = document.getElementById("clearFormBtn");
+  const tasksList = document.getElementById("tasksList");
+  const statsDiv = document.getElementById("taskStats");
+
+  // Task Rendering Function - Creates and displays task cards with progress indicators and delete buttons
+  function renderTasks(){
+    tasksList.innerHTML = "";
+    const tasks = App.loadTasks();
+    tasks.forEach((task, idx) => {
+      const card = App.el("div", "task-card");
+      const meta = App.el("div", "task-meta");
+      const title = App.el("div", "task-title");
+      title.textContent = task.title;
+      meta.appendChild(title);
+
+      if(task.description){
+        const desc = App.el("div", "small");
+        desc.textContent = task.description;
+        meta.appendChild(desc);
+      }
+
+      const right = App.el("div", "task-right");
+      const circle = App.el("div", "pct-circle");
+      circle.textContent = `${task.progress || 0}%`;
+      right.appendChild(circle);
+
+      const delBtn = App.el("button", "btn");
+      delBtn.textContent = "Delete";
+      delBtn.onclick = () => {
+        if(confirm("Delete this task?")){
+          App.removeTask(idx); // Note: Using removeTask instead of deleteTask
+          renderTasks();
+          renderStats();
+        }
+      };
+      right.appendChild(delBtn);
+
+      card.appendChild(meta);
+      card.appendChild(right);
+      tasksList.appendChild(card);
+    });
+
+    if(tasks.length === 0){
+      tasksList.innerHTML = `<div class="small">No tasks yet. Add one above! 🌸</div>`;
+    }
+  }
+
+  // Statistics Rendering Function - Calculates and displays task statistics by priority and completion status
+  function renderStats(){
+    const tasks = App.loadTasks();
+    const total = tasks.length;
+    const completed = tasks.filter(t => (t.progress || 0) >= 100).length;
+    const high = tasks.filter(t => t.priority === "High").length;
+    const medium = tasks.filter(t => t.priority === "Medium").length;
+    const low = tasks.filter(t => t.priority === "Low").length;
+
+    statsDiv.innerHTML = `
+      <div class="small">Total: ${total}</div>
+      <div class="small">Completed: ${completed}</div>
+      <div class="small">High: ${high} | Medium: ${medium} | Low: ${low}</div>
+    `;
+  }
+
+  // Event Listeners - Handle form submission and form clearing
+  addBtn.addEventListener("click", () => {
+    const title = titleInput.value.trim();
+    if(!title) {
+      alert("Please enter a task title");
+      return;
+    }
+
+    const task = {
+      title: title,
+      description: descInput.value.trim(),
+      priority: prioritySelect.value,
+      dueDate: dueDateInput.value,
+      progress: parseInt(progressInput.value) || 0
+    };
+
+    App.addTask(task);
+    titleInput.value = "";
+    descInput.value = "";
+    prioritySelect.value = "Low";
+    dueDateInput.value = "";
+    progressInput.value = "";
+    renderTasks();
+    renderStats();
+  });
+
+  clearBtn.addEventListener("click", () => {
+    titleInput.value = "";
+    descInput.value = "";
+    prioritySelect.value = "Low";
+    dueDateInput.value = "";
+    progressInput.value = "";
+  });
+
+  // Utility Functions - Bulk operations and data export functionality
+  function clearAllTasks(){
+    if(confirm("Delete ALL tasks? This cannot be undone!")){
+      localStorage.removeItem(App.KEY_TASKS);
+      renderTasks();
+      renderStats();
+    }
+  }
+
+  function exportTasks(){
+    const tasks = App.loadTasks();
+    const dataStr = JSON.stringify(tasks, null, 2);
+    const dataBlob = new Blob([dataStr], {type: "application/json"});
+    const url = URL.createObjectURL(dataBlob);
+    const link = document.createElement("a");
+    link.href = url;
+    link.download = "pastel-tasks-backup.json";
+    link.click();
+    URL.revokeObjectURL(url);
+  }
+
+  // Page Initialization - Load tasks and statistics when DOM is ready
+  document.addEventListener("DOMContentLoaded", () => {
+    renderTasks();
+    renderStats();
+  });
+</script>
+</body>
+</html>
